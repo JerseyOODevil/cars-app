@@ -1,19 +1,10 @@
 # cars-app
 
-## Project setup
-```
-npm install
-```
+## Run project on server
+From project directory:
+1) npm run build
+    --create client build
+2) node server/server.js
+    --run server
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+App link: http://server_ip:3000/
