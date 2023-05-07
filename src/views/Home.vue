@@ -20,6 +20,9 @@
     </div>
     <input type="submit" class="send" value="Send">
   </form>
+  <form @submit.prevent="getData">
+    <input type="submit" class="send" value="Отправить GET Запрос">
+  </form>
   </div>
 </template>
 
@@ -53,6 +56,18 @@ export default {
           gender: this.gender
         }
       }));
+    },
+    async getData(){
+      let params = {};
+      for (let i of ['name', 'email', 'address', 'gender'])
+        if (this[i])
+          params[i] = this[i];
+      let res = await axios({
+        url: 'http://localhost:3000/api/records/',
+        method: 'get',
+        params: params
+      });
+      console.log(res);
     }
   }
 }

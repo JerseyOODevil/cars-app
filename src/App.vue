@@ -1,7 +1,8 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/thanks">Thanks</router-link>
+    <router-link to="/trunc">Truncate database</router-link> | 
+    <router-link to="/car">Car</router-link>
   </nav>
   <router-view/>
 </template>

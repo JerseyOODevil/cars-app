@@ -3,12 +3,8 @@ const router = express.Router();
 
 const Record = require('../models/Record.js');
 
-console.log(Record);
-
 router.get('/', async (req, res) => {
-    let rec = await Record.find();
-    console.log(rec);
-    res.json(rec);
+    res.json(await Record.find(req.query));
 });
 
 router.post('/', async (req, res) => {
@@ -17,17 +13,13 @@ router.post('/', async (req, res) => {
     res.json({state: 'sucsess'});
 });
 
-router.get('/:id', async (req, res) => {
-    res.json(await Record.findById(req.params.id));
-});
-
 router.put('/:id', async (req, res) => {
     await Record.findByIdAndUpdate(req.params.id, req.body);
     res.json({state: 'updated'});
 });
 
-router.delete('/:id', async (req, res) => {
-    await Record.findByIdAndRemove(req.params.id);
+router.delete('/', async (req, res) => {
+    await Record.deleteMany(req.query);
     res.json({state: 'deleted'});
 });
 
