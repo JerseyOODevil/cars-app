@@ -18,6 +18,11 @@ router.put('/:id', async (req, res) => {
     res.json({state: 'updated'});
 });
 
+router.delete('/:id', async (req, res) => {
+    await Record.findByIdAndDelete(req.params.id);
+    res.json({state: 'deleted'});
+});
+
 router.delete('/', async (req, res) => {
     await Record.deleteMany(req.query);
     res.json({state: 'deleted'});

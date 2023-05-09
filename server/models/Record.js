@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const Record = new Schema({
+    id:Number,
     model: String,
     buildYear: Number,
-    buyPrice: Number,
-    sellPrice: Number,
     operations: Array
 });
 
