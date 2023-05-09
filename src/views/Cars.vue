@@ -4,7 +4,7 @@
     <input type="submit" value="Check data" @click="console.log(this.array)">
     <input type="submit" value="Save data" @click="save()">
     <div>
-      <cars-table id="Table" v-bind="{array:this.array}" @add="addCar($event)"></cars-table>
+      <cars-table id="Table" v-bind="{array:this.array}" @add="addCar($event)" @edit="editCar($event)" @delete="deleteCar($event)"></cars-table>
     </div>
   </div>
 </template>
@@ -17,10 +17,7 @@
     name: "Trunc",
     data: function(){
       return {
-        array:[],
-        addIds:[],
-        delIds:[],
-        changes:[]
+        array:[]
       }
     },
     components: {
@@ -40,59 +37,38 @@
         }))
       },
       addCar(rowId){
-        this.addIds.push(this.array[rowId].id)
-      },
-      async save(){
-        let newChanges = []
-        for (el of this.changes)
-          if (this.delIds.indexOf(el.id))
-            newChanges.push(el)
-
-        let i = 0
-        while (i < this.delIds.length){
-          let idx = this.addIds.indexOf(this.delIds[i])
-          if (idx !== -1){
-            this.addIds.splice(idx,1)
-            this.delIds.splice(i,1)
-          }
-          else
-            i += 1
-        }
-        
-        let pushBody = []
-        let putBody = []
-        for (let el of newChanges){
-          if (this.addIds.indexOf(el.id) !== -1){
-            pushBody.push(el)
-            continue
-          }
-          putBody.push(el)
-        }
-
-        for (let el of this.delIds)
-          await axios({
-            url: `http://localhost:3000/api/records/:${el}`,
-            method: 'delete'
-          })
-
-        await axios({
+        console.log(this.array[rowId])
+        axios({
           url: 'http://localhost:3000/api/records/',
           method: 'post',
-          data: pushBody
+          data: {
+            id: this.array[rowId].id,
+            model: this.array[rowId].model,
+            buildYear: this.array[rowId].buildYear,
+            operations: this.array[rowId].operations
+          }
         })
-
-        for (let el of putBody)
-          await axios({
-            url: `http://localhost:3000/api/records/:${el.id}`,
+        this.refresh()
+      },
+      editCar(rowId){
+        let el = this.array[rowId]
+        axios({
+            url: `http://localhost:3000/api/records/:${el._id}`,
             method: 'put',
             data: el
-          })
-        
-        this.addIds = []
-        this.delIds = []
-        this.changes = []
-
-        let response = this.getDataFromDB()
+        })
+      },
+      deleteCar(rowId){
+        let delId = this.array[rowId].id
+        axios({
+            url: `http://localhost:3000/api/records/?id=${delId}`,
+            method: 'delete'
+        })
+        this.refresh()
+      },
+      async refresh(){
+        let response = await this.getDataFromDB()
+        console.log(response);
         if (response.status === 200)
           this.array = response.data
         else
@@ -100,11 +76,8 @@
       }
     },
     mounted: function(){
-      let response = this.getDataFromDB()
-      if (response.status === 200)
-        this.array = response.data
-      else
-        this.array = []
+      this.refresh()
+      console.log(this.array);
     }
 }
 </script>

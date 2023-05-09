@@ -5,6 +5,7 @@
             v-bind="{columns:this.columns,array:this.array}" 
             @add="this.$emit('add',$event)"
             @edit="this.$emit('edit',$event)"
+            @delete="this.$emit('delete',$event)"
         >
         </object-table>
     </div>

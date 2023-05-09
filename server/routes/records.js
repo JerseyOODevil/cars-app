@@ -4,7 +4,11 @@ const router = express.Router();
 const Record = require('../models/Record.js');
 
 router.get('/', async (req, res) => {
-    res.json(await Record.find(req.query));
+    return res.json(await Record.find(req.query));
+});
+
+router.get('/:id', async (req, res) => {
+    return res.json(await Record.findById(req.params.id));
 });
 
 router.post('/', async (req, res) => {
@@ -19,11 +23,13 @@ router.put('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
+    console.log(req.params.id)
     await Record.findByIdAndDelete(req.params.id);
     res.json({state: 'deleted'});
 });
 
 router.delete('/', async (req, res) => {
+    console.log(req.query)
     await Record.deleteMany(req.query);
     res.json({state: 'deleted'});
 });
