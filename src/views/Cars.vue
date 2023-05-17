@@ -1,83 +1,64 @@
 <template>
-  <div class="Trunc">
+  <div class="Cars">
     <input type="submit" value="Drop database" @click="dropData()">
-    <input type="submit" value="Check data" @click="console.log(this.array)">
+    <input type="submit" value="Check data" @click="this.refresh()">
     <input type="submit" value="Save data" @click="save()">
-    <div>
-      <cars-table id="Table" v-bind="{array:this.array}" @add="addCar($event)" @edit="editCar($event)" @delete="deleteCar($event)"></cars-table>
-    </div>
+    
+    <cars-table :cars="cars" @add="addCar()"/>
+    
   </div>
+
+  
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from 'axios'
   import CarsTable from '@/components/CarsTable.vue'
 
   export default {
-    name: "Trunc",
+    name: "Cars",
     data: function(){
       return {
-        array:[]
+        cars: []
       }
     },
     components: {
       CarsTable
     },
     methods: {
-      async getDataFromDB(){
-        return await axios({
-          url: 'http://localhost:3000/api/records/',
-          method: 'get'
-        })
-      },
-      async dropData(){
-        console.log(await axios({
-          url: 'http://localhost:3000/api/records/',
-          method: 'delete'
-        }))
-      },
-      addCar(rowId){
-        console.log(this.array[rowId])
+      addCar(){
+        let newId = 1
+        if (this.cars && this.cars.length > 0)
+          newId = this.cars[this.cars.length - 1].id + 1
         axios({
-          url: 'http://localhost:3000/api/records/',
+          url: 'http://localhost:3000/api/records',
           method: 'post',
           data: {
-            id: this.array[rowId].id,
-            model: this.array[rowId].model,
-            buildYear: this.array[rowId].buildYear,
-            operations: this.array[rowId].operations
+            id:newId,
+            model: null,
+            buildYear: null,
+            operations: []
           }
         })
         this.refresh()
       },
-      editCar(rowId){
-        let el = this.array[rowId]
-        axios({
-            url: `http://localhost:3000/api/records/:${el._id}`,
-            method: 'put',
-            data: el
-        })
-      },
-      deleteCar(rowId){
-        let delId = this.array[rowId].id
-        axios({
-            url: `http://localhost:3000/api/records/?id=${delId}`,
-            method: 'delete'
-        })
-        this.refresh()
-      },
       async refresh(){
-        let response = await this.getDataFromDB()
-        console.log(response);
-        if (response.status === 200)
-          this.array = response.data
-        else
-          this.array = []
+        let resData = await axios({
+          url: 'http://localhost:3000/api/records',
+          method: 'get'
+        })
+
+        this.cars = resData.data
+      },
+      dropData(){
+        axios({
+          url: 'http://localhost:3000/api/records',
+          method: 'delete'
+        })
       }
     },
     mounted: function(){
       this.refresh()
-      console.log(this.array);
     }
 }
 </script>

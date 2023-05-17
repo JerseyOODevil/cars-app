@@ -29,7 +29,6 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.delete('/', async (req, res) => {
-    console.log(req.query)
     await Record.deleteMany(req.query);
     res.json({state: 'deleted'});
 });
