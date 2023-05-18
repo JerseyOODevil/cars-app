@@ -2,9 +2,22 @@
   <div class="Cars">
     <input type="submit" value="Drop database" @click="dropData()">
     <input type="submit" value="Check data" @click="this.refresh()">
-    <input type="submit" value="Save data" @click="save()">
+    <input type="submit" value="Save data" >
     
-    <cars-table :cars="cars" @add="addCar()"/>
+    <cars-table 
+      v-if="selectedCar===null"
+      :cars="cars"
+      @add="addCar()"
+      @select="selectedCar = cars[$event]"
+      @delete="deleteCar($event)"
+    />
+
+    <car 
+      v-if="selectedCar!==null"
+      :car="selectedCar"
+      @save="saveCar($event)"
+      @revert="revertCar()"
+    />
     
   </div>
 
@@ -14,16 +27,19 @@
 <script>
   import axios from 'axios'
   import CarsTable from '@/components/CarsTable.vue'
+  import Car from '@/components/Car.vue'
 
   export default {
     name: "Cars",
     data: function(){
       return {
-        cars: []
+        cars: [],
+        selectedCar: null
       }
     },
     components: {
-      CarsTable
+      CarsTable,
+      Car
     },
     methods: {
       addCar(){
@@ -35,16 +51,18 @@
           method: 'post',
           data: {
             id:newId,
+            table:'cars',
             model: null,
             buildYear: null,
-            operations: []
+            operations: [],
+            photos:[]
           }
         })
         this.refresh()
       },
       async refresh(){
         let resData = await axios({
-          url: 'http://localhost:3000/api/records',
+          url: 'http://localhost:3000/api/records?table=cars',
           method: 'get'
         })
 
@@ -55,6 +73,32 @@
           url: 'http://localhost:3000/api/records',
           method: 'delete'
         })
+        this.refresh()
+      },
+      selectCar(id){
+        this.selectedCar=this.cars[id]
+      },
+      saveCar(car){
+        this.selectedCar=null
+
+        axios({
+          url: `http://localhost:3000/api/records?id=${car.id}`,
+          method: 'put',
+          data:car
+        })
+
+        this.refresh()
+      },
+      revertCar(){
+        this.selectedCar = null
+        this.refresh()
+      },
+      deleteCar(carId){
+        axios({
+          url: `http://localhost:3000/api/records?id=${carId}`,
+          method: 'delete'
+        })
+        this.refresh()
       }
     },
     mounted: function(){

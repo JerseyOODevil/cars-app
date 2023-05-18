@@ -1,8 +1,16 @@
 <template>
-    <div class="form-control">
+    <div class="block">
         <img src="@/assets/add.png" width="30" height="30" @click="$emit('add')">
-        <img src="@/assets/edit.png" width="30" height="30" @click="logButton()"><br>
-        <router-link v-for="car in cars" :to="getCarLink(car.id)">{{ getCarName(car) }}<br></router-link>
+        <img src="@/assets/edit.png" width="30" height="30" @click="logButton()">
+    </div>
+    <div>
+        <table class="table">
+            <tr v-for="(car, id) in cars">
+                <td><label class="table-label" @click="$emit('select', id)">{{ getCarName(car) }}</label></td>
+                <td><img class="table-img" src="@/assets/delete.png" width="30" height="30" @click="$emit('delete', car.id)"/></td>
+            </tr>
+        </table>
+        
     </div>
 </template>
 
@@ -13,21 +21,23 @@
             cars: Array
         },
         methods: {
-            getCarLink(carId, isNew=false){
-                return `/cars?id=${carId}&is_new=${isNew}`
-            },
             getCarName(car){
-                // let buyDate = null
-                // for (let op of car.operations)
-                //     if (op.name.toUpperCase() = 'ПОКУПКА'){
-                //         buyDate = op.date
-                //         break
-                //     }
-                // if ((car.model)||(buyDate))
-                //     return `${car.model} от ${buyDate}`
-                // else
-                //     return `id=${car.id}`
-                return `id=${car.id}` 
+                let buyDate = null
+
+                for (let op of car.operations)
+                    if (String(op.name).toUpperCase() === 'ПОКУПКА'){
+                        buyDate = op.date
+                        break
+                    }
+                if ((car.model)|| (car.buildYear) ||(buyDate)){
+                    let s = ''
+                    s += car.model ? `${car.model} ` : ''
+                    s += car.buildYear ? `(${car.buildYear}) ` : ''
+                    s += buyDate ? `от ${buyDate}` : ''
+                    return s
+                }
+                
+                return `id=${car.id}`
             },
             logButton(){
                 console.log(this.cars);
@@ -37,14 +47,23 @@
 </script>
 
 <style>
-  .form-control {
-    padding: 5px;
-  } 
-  .form-control label {
-    display: block;
-  }
-  .send {
-    margin: 5px;
-    padding: 10px;
-  }
+    .block {
+        text-align: center;
+    } 
+    .table-label {
+        display: inline-block;
+        border-radius: 5px;
+        border: 1px solid #0070c9;
+        width: 300px;
+    }
+    .table-img {
+        display: inline-block;
+    }
+    .table {
+        text-align: center;
+        display: inline-block;
+        padding: 5px;
+        margin: 15px;
+        caret-color: transparent;
+    }
 </style>

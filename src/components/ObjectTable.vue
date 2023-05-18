@@ -1,5 +1,5 @@
 <template>
-    <img src="@/assets/add.png" @click="addRow()" width="30" height="30">
+    <img class="image" src="@/assets/add.png" @click="addRow()" width="30" height="30">
     <table class="table" cellspacing="0">
         <tr class="header-row">
             <th v-for="el in columns">{{ el.label }}</th>
@@ -10,7 +10,7 @@
                     :type="col.type" 
                     :value="row[col.key]"
                     :checked="row[col.key]"
-                    @input="editCell($event, rowId, colId)"
+                    @input="editCell($event, rowId, col.key)"
                 />
             </td>
             <td><img src="@/assets/delete.png" width="30" height="30" @click="this.$emit('delete',rowId)"></td>
@@ -39,15 +39,16 @@
                     newObj[col.key] = null
                 newObj.id = this.array.length > 0 ? this.array[this.array.length - 1].id + 1 : 1
                 this.array.push(newObj)
-                this.$emit('add', (this.array.length - 1))
+                this.$emit('edit', this.array)
             },
             editCell(event, rowId, colId){
-                let newValue = {id:rowId, key:this.columns[colId].key, value:null}
+                let newValue = null
                 if (event.target.type === 'checkbox')
-                    newValue.value = event.target.checked
+                    newValue = event.target.checked
                 else
-                    newValue.value = event.target.value
-                this.$emit('edit',newValue)
+                    newValue = event.target.value
+                this.array[rowId][colId] = newValue
+                this.$emit('edit',this.array)
             }
         }
     }
@@ -60,6 +61,9 @@
         padding: 10px;
         margin: 10px;
         caret-color: transparent;
+    }
+    .image{
+        display: inline-block;
     }
     .header-row {
         background-color: #999999;
