@@ -1,1 +1,1 @@
-node server/server.js
+cls && node server/server.js
