@@ -1,8 +1,11 @@
 # cars-app
 
 ## Run project on server
-From project directory:
-'rebuild.bat' for rebuild App
-'startServer.bat' for run backend on port 3000
++Install "Node.js" and "MongoDB"
 
-App link: http://server_ip:3000/
++'Rebuild and Run.bat' for rebuild App and run backend on port 3000
+
++'startServer.bat' for run backend on port 3000
+
+## Run client
+App link: http://\[server_ip\]:3000/
