@@ -38,7 +38,21 @@ export default {
         url: '/api/records?table=operations',
         method: 'get'
       })
-      this.opCar=resData.data[0]
+
+      if (resData.data.length === 0){
+        //Если записей об операциях нет, то создаёт запись в БД
+        await axios({
+          url: '/api/records',
+          method: 'post',
+          data:{
+            id: 0,
+            table: 'operations',
+            operations: []
+          }
+        })
+      }
+      else
+        this.opCar=resData.data[0]
     },
     addOperation(){
       let newId = 1
@@ -64,19 +78,6 @@ export default {
         data: this.opCar
       })
       await this.refresh()
-    },
-    init(){
-      axios({
-        url: '/api/records',
-        method: 'post',
-        data: {
-          id: 0,
-          table: 'operations',
-          model: null,
-          buildYear: null,
-          operations:[]
-        }
-      })
     }
   },
   mounted:function(){
