@@ -1,10 +1,15 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/cars">Cars overview</router-link>
+    <router-link to="/">Главная</router-link> |
+    <router-link to="/cars">Авто</router-link> |
+    <router-link to="/operations">Прочие операции</router-link>
   </nav>
   <router-view/>
 </template>
+
+<script>
+
+</script>
 
 <style>
 #app {

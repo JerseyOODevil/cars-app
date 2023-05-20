@@ -1,21 +1,24 @@
 <template>
-    <img class="image" src="@/assets/add.png" @click="addRow()" width="30" height="30">
-    <table class="table" cellspacing="0">
-        <tr class="header-row">
-            <th v-for="el in columns">{{ el.label }}</th>
-        </tr>
-        <tr v-for="(row, rowId) in array">
-            <td v-for="(col, colId) in columns">
-                <input
-                    :type="col.type" 
-                    :value="row[col.key]"
-                    :checked="row[col.key]"
-                    @input="editCell($event, rowId, col.key)"
-                />
-            </td>
-            <td><img src="@/assets/delete.png" width="30" height="30" @click="this.$emit('delete',rowId)"></td>
-        </tr>
-    </table>
+    <div class="content">
+        <img class="image" src="@/assets/add.png" @click="addRow()" width="30" height="30">
+    
+        <table class="table" cellspacing="0">
+            <tr class="header-row">
+                <th v-for="el in columns">{{ el.label }}</th>
+            </tr>
+            <tr v-for="(row, rowId) in array">
+                <td v-for="(col, colId) in columns">
+                    <input
+                        :type="col.type" 
+                        :value="row[col.key]"
+                        :checked="row[col.key]"
+                        @input="editCell($event, rowId, col.key)"
+                    />
+                </td>
+                <td><img src="@/assets/delete.png" width="30" height="30" @click="this.$emit('delete',rowId)"></td>
+            </tr>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -57,15 +60,21 @@
 <style>
     .table {
         color: #ff00ff;
-        display: inline-block;
+        display: block;
         padding: 10px;
         margin: 10px;
         caret-color: transparent;
     }
     .image{
-        display: inline-block;
+        display: block;
     }
     .header-row {
         background-color: #999999;
+    }
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
     }
 </style>

@@ -1,9 +1,5 @@
 <template>
-  <div class="Cars">
-    <input type="submit" value="Drop database" @click="dropData()">
-    <input type="submit" value="Check data" @click="this.refresh()">
-    <input type="submit" value="Save data" >
-    
+  <div class="cars">
     <cars-table 
       v-if="selectedCar===null"
       :cars="cars"
@@ -108,7 +104,7 @@
 </script>
 
 <style>
-  div {
+  .cars {
     text-align: center;
   }
 </style>
