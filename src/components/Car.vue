@@ -1,14 +1,18 @@
 <template>
   <div class="form-control">
-    <input-component v-model:value="this.car.model" v-bind="{id:'model', name:'Модель авто', type:'text'}"></input-component>
-    <input-component v-model:value="this.car.buildYear" v-bind="{id:'buildYear', name:'Год выпуска', type:'number'}"></input-component>
+    <div style="display:block; max-width: 500px;">
+      <input-component v-bind="{id:'model', name:'Модель авто', type:'text', value:car.model }" @edit="car.model = $event"/>
+      <input-component v-bind="{id:'buildYear', name:'Год выпуска', type:'number', value:car.buildYear}" @edit="car.buildYear=$event"/>
+    </div>
     <object-table class="table" id="Table" 
       v-bind="{columns:this.columns,array:this.car.operations}"
       @edit="editOperations($event)"
       @delete="deleteOperation($event)"
     />
-    <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
-    <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
+    <div style="display:block;">
+      <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
+      <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
+    </div>
   </div>
 </template>
 
@@ -50,10 +54,11 @@ export default {
 <style>
   .form-control {
     padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   } 
-  .form-control label {
-    display: block;
-  }
   .table {
     margin: 5px;
     padding: 10px;
@@ -62,6 +67,6 @@ export default {
   .send {
     margin: 5px;
     padding: 10px;
-    display: block;
+    display: inline-block;
   }
 </style>

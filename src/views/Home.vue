@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-    <input type="submit" value="Check Data" @click="checkData()">
-    <ObjectTable v-bind="{columns: columns, array: array}" @edit="editElem($event)"></ObjectTable>
+    <label>{{ `Баланс: ${balance}` }}</label>
   </div>
 </template>
 
@@ -18,29 +17,41 @@ export default {
   },
   data: function() {
     return {
-      columns: [{key:'a', label: 'aa',type: 'text'},{key:'b', label: 'bb', type: 'number'},{key:'c', label: 'cc', type: 'checkbox'}],
-      array: [{a:'asdasd',b:2,c:true},{a:'jkljkl',b:5,c:false}]
+      cars:[]
+    }
+  },
+  computed:{
+    balance: function(){
+      let res = 0
+
+      for(let car of this.cars){
+        for (let op of car.operations){
+          res += Number(op.value)
+        }
+      }
+      return res
     }
   },
   methods:{
-    checkData(){
-      console.log(this.array)
-    },
-    editElem(event){
-      this.array[event.id][event.key] = event.value
+    refresh: async function(){
+      let resData = await axios({
+        url: '/api/records',
+        method: 'get'
+      })
+      this.cars=resData.data
     }
+  },
+  mounted:function(){
+    this.refresh()
   }
 }
 </script>
 
 <style>
-  .form-control {
-    padding: 5px;
-  } 
-  .form-control label {
-    display: block;
-  }
-  .send {
-    margin: 5px
+  .home {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
 </style>
