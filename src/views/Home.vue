@@ -1,23 +1,31 @@
 <template>
   <div class="home">
     <label>{{ `Баланс: ${balance}` }}</label>
+    <div style="display:block; width:100%; height:600px;">
+      <v-chart :option="capital" :init-options="echartsInit" autoresize/>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-
-import axios from 'axios';
+import axios from 'axios'
 import ObjectTable from '@/components/ObjectTable.vue'
+import 'echarts'
+import VChart from 'vue-echarts'
 
 export default {
   name: 'Home',
   components: {
-    ObjectTable
+    ObjectTable,
+    VChart
   },
   data: function() {
     return {
-      cars:[]
+      cars:[],
+      echartsInit: {
+        renderer: 'canvas',
+        useDirtyRect: false
+      }
     }
   },
   computed:{
@@ -30,6 +38,26 @@ export default {
         }
       }
       return res
+    },
+    capital: function(){
+      return {
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: [150, 230, 224, 218, 135, 147, 260],
+            type: 'bar'
+          }
+        ],
+        tooltip:{
+          show: true
+        }
+      }
     }
   },
   methods:{

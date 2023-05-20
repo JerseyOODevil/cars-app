@@ -6,8 +6,8 @@
         </div>
         <div style="display:block">
             <table class="table">
-                <tr v-for="(car, id) in cars">
-                    <td><label class="table-label" @click="$emit('select', id)">{{ getCarName(car) }}</label></td>
+                <tr v-for="car in cars">
+                    <td><label class="table-label" @click="$emit('select', car)">{{ getCarName(car) }}</label></td>
                     <td><img class="table-img" src="@/assets/delete.png" width="30" height="30" @click="$emit('delete', car.id)"/></td>
                 </tr>
             </table>        
@@ -41,7 +41,7 @@
                 return `id=${car.id}`
             },
             logButton(){
-                console.log(this.$store);
+                console.log(this.cars);
             }
         }
     }

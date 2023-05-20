@@ -2,7 +2,7 @@
   <div class="cars">
     <cars-table 
       v-if="selectedCar===null"
-      :cars="cars"
+      :cars="revCars"
       @add="addCar()"
       @select="selectedCar = cars[$event]"
       @delete="deleteCar($event)"
@@ -31,6 +31,11 @@
       return {
         cars: [],
         selectedCar: null
+      }
+    },
+    computed:{
+      revCars:function(){
+        return this.cars.reverse()
       }
     },
     components: {
@@ -71,8 +76,8 @@
         })
         this.refresh()
       },
-      selectCar(id){
-        this.selectedCar=this.cars[id]
+      selectCar(car){
+        this.selectedCar=car
       },
       saveCar(car){
         this.selectedCar=null
