@@ -44,12 +44,12 @@
       Car
     },
     methods: {
-      async addCar(){
+      addCar: async function(){
         let newId = 1
         if (this.cars && this.cars.length > 0)
           newId = this.cars[this.cars.length-1].id + 1
         await axios({
-          url: 'http://localhost:3000/api/records',
+          url: '/api/records',
           method: 'post',
           data: {
             id:newId,
@@ -60,48 +60,40 @@
             photos:[]
           }
         })
-        await this.refresh()
+        await this.getCars()
       },
-      async refresh(){
+      getCars: async function(){
         let resData = await axios({
-          url: 'http://localhost:3000/api/records?table=cars',
+          url: '/api/records?table=cars',
           method: 'get'
         })
-
         this.cars = resData.data
       },
-      dropData(){
-        axios({
-          url: 'http://localhost:3000/api/records',
-          method: 'delete'
-        })
-        this.refresh()
-      },
-      saveCar(car){
+      saveCar: async function(car){
         this.selectedCar=null
 
-        axios({
-          url: `http://localhost:3000/api/records?id=${car.id}`,
+        await axios({
+          url: `/api/records?id=${car.id}`,
           method: 'put',
           data:car
         })
 
-        this.refresh()
+        await this.getCars()
       },
-      revertCar(){
+      revertCar: async function(){
         this.selectedCar = null
-        this.refresh()
+        await this.getCars()
       },
-      deleteCar(carId){
-        axios({
-          url: `http://localhost:3000/api/records?id=${carId}`,
+      deleteCar: async function(carId){
+        await axios({
+          url: `/api/records?id=${carId}`,
           method: 'delete'
         })
-        this.refresh()
+        await this.getCars()
       }
     },
-    mounted: function(){
-      this.refresh()
+    mounted: async function(){
+      await this.getCars()
     }
 }
 </script>
