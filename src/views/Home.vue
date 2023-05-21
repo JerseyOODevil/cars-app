@@ -40,17 +40,46 @@ export default {
       return res
     },
     capital: function(){
+      let dateNow = new Date()
+      let monthId = dateNow.getFullYear()*100 + dateNow.getMonth() - 99
+      
+      let months = []
+      for (let i=0; i<12; i++){
+        months.push(monthId)
+        if (monthId % 100 === 12)
+          monthId += 89
+        else
+          monthId++
+      }
+
+      let dataArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+      let monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']
+
+      for (let car of this.cars)
+        for (let op of car.operations){
+          let opDate = new Date(op.date)
+          for (let i in months){
+            if (opDate.getFullYear()*100 + opDate.getMonth() + 1 <= months[i])
+              dataArray[i] += Number(op.value)
+          }
+        }
+      
+      let newMonths = []
+      for (let i in months){
+        newMonths.push(`${monthNames[months[i] % 100 - 1]} ${parseInt(Math.floor(months[i]/100))}`)
+      }
+      
       return {
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: newMonths
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: dataArray,
             type: 'bar'
           }
         ],

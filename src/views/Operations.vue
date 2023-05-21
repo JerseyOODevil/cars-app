@@ -57,7 +57,7 @@ export default {
     addOperation(){
       let newId = 1
       if (this.opCar.operations.length > 0)
-        newId = this.opCar.operations[-1].id
+        newId = this.opCar.operations[this.opCar.operations.length-1].id + 1
       this.opCar.operations.push({
         id: newId,
         name: null,
@@ -92,5 +92,7 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
+    height: auto;
   }
 </style>

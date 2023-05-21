@@ -4,7 +4,7 @@
       v-if="selectedCar===null"
       :cars="revCars"
       @add="addCar()"
-      @select="selectedCar = cars[$event]"
+      @select="selectedCar = $event"
       @delete="deleteCar($event)"
     />
 
@@ -35,7 +35,8 @@
     },
     computed:{
       revCars:function(){
-        return this.cars.reverse()
+        let newArr = [].concat(this.cars).reverse()
+        return newArr
       }
     },
     components: {
@@ -43,11 +44,11 @@
       Car
     },
     methods: {
-      addCar(){
+      async addCar(){
         let newId = 1
         if (this.cars && this.cars.length > 0)
-          newId = this.cars[this.cars.length - 1].id + 1
-        axios({
+          newId = this.cars[this.cars.length-1].id + 1
+        await axios({
           url: 'http://localhost:3000/api/records',
           method: 'post',
           data: {
@@ -59,7 +60,7 @@
             photos:[]
           }
         })
-        this.refresh()
+        await this.refresh()
       },
       async refresh(){
         let resData = await axios({
@@ -75,9 +76,6 @@
           method: 'delete'
         })
         this.refresh()
-      },
-      selectCar(car){
-        this.selectedCar=car
       },
       saveCar(car){
         this.selectedCar=null
@@ -110,6 +108,11 @@
 
 <style>
   .cars {
-    text-align: center;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
 </style>
