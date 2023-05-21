@@ -2,12 +2,11 @@
     <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: center;">
         <div style="display:flex; flex-direction: row; justify-content: flex-start;">
             <img src="@/assets/add.png" width="30" height="30" @click="$emit('add')">
-            <img src="@/assets/edit.png" width="30" height="30" @click="logButton()">
         </div>
         <div style="display:block">
             <table class="table">
-                <tr v-for="(car, id) in cars">
-                    <td><label class="table-label" @click="$emit('select', id)">{{ getCarName(car) }}</label></td>
+                <tr v-for="car in cars">
+                    <td @click="$emit('select', car)">{{ getCarName(car) }}</td>
                     <td><img class="table-img" src="@/assets/delete.png" width="30" height="30" @click="$emit('delete', car.id)"/></td>
                 </tr>
             </table>        
@@ -41,7 +40,7 @@
                 return `id=${car.id}`
             },
             logButton(){
-                console.log(this.$store);
+                console.log(this.cars);
             }
         }
     }
@@ -50,9 +49,6 @@
 <style>
     .table-label {
         display: inline-block;
-        border-radius: 5px;
-        border: 1px solid #0070c9;
-        width: 300px;
     }
     .table-img {
         display: inline-block;
@@ -63,11 +59,5 @@
         padding: 5px;
         margin: 15px;
         caret-color: transparent;
-    }
-    .content {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
     }
 </style>

@@ -2,9 +2,9 @@
   <div class="cars">
     <cars-table 
       v-if="selectedCar===null"
-      :cars="cars"
+      :cars="revCars"
       @add="addCar()"
-      @select="selectedCar = cars[$event]"
+      @select="selectedCar = $event"
       @delete="deleteCar($event)"
     />
 
@@ -33,16 +33,22 @@
         selectedCar: null
       }
     },
+    computed:{
+      revCars:function(){
+        let newArr = [].concat(this.cars).reverse()
+        return newArr
+      }
+    },
     components: {
       CarsTable,
       Car
     },
     methods: {
-      addCar(){
+      async addCar(){
         let newId = 1
         if (this.cars && this.cars.length > 0)
-          newId = this.cars[this.cars.length - 1].id + 1
-        axios({
+          newId = this.cars[this.cars.length-1].id + 1
+        await axios({
           url: 'http://localhost:3000/api/records',
           method: 'post',
           data: {
@@ -54,7 +60,7 @@
             photos:[]
           }
         })
-        this.refresh()
+        await this.refresh()
       },
       async refresh(){
         let resData = await axios({
@@ -70,9 +76,6 @@
           method: 'delete'
         })
         this.refresh()
-      },
-      selectCar(id){
-        this.selectedCar=this.cars[id]
       },
       saveCar(car){
         this.selectedCar=null
@@ -105,6 +108,11 @@
 
 <style>
   .cars {
-    text-align: center;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
 </style>

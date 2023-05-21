@@ -4,6 +4,14 @@
       <input-component v-bind="{id:'model', name:'Модель авто', type:'text', value:car.model }" @edit="car.model = $event"/>
       <input-component v-bind="{id:'buildYear', name:'Год выпуска', type:'number', value:car.buildYear}" @edit="car.buildYear=$event"/>
     </div>
+    <div style="display:block; max-width: 500px;">
+      <label>{{ `Доход: ${plus} руб.` }}</label><br/>
+      <label>{{ `Расход: ${minus} руб.` }}</label><br/>
+      <label>{{ `Прибыль: ${plus - minus} руб.` }}</label><br/>
+      <br/>
+      <label>{{ `Дней в работе: ${daysCount}` }}</label><br/>
+      <label>{{ `Доход в день: ${Math.round((plus - minus)*100/daysCount)/100} руб.` }}</label><br/>
+    </div>
     <object-table class="table" id="Table" 
       v-bind="{columns:this.columns,array:this.car.operations}"
       @edit="editOperations($event)"
@@ -36,6 +44,44 @@ export default {
         {key:'value',label:'Оборот, руб.',type:'number'}
       ]
     }
+  },
+  computed:{
+    buyDate: function(){
+      if (this.car.operations.length === 0)
+        return null
+      for (let op of this.car.operations)
+        if (String(op.name).toUpperCase() === 'ПОКУПКА')
+          return new Date(op.date)
+    },
+    sellDate: function(){
+      if (this.car.operations.length === 0)
+        return null
+      for (let op of this.car.operations)
+        if (String(op.name).toUpperCase() === 'ПРОДАЖА')
+          return new Date(op.date)
+    },
+    daysCount: function(){
+      if (this.buyDate && this.sellDate)
+        return Math.floor((this.sellDate - this.buyDate)/1000/3600/24) + 1
+      else
+        return null
+    },
+    plus: function(){
+      return this.car.operations.reduce((acc, cur) => {
+        if (Number(cur.value) > 0)
+          return acc + Number(cur.value)
+        else
+          return acc
+      },0)
+    },
+    minus: function(){
+      return 0 - this.car.operations.reduce((acc, cur) => {
+        if (Number(cur.value) < 0)
+          return acc + Number(cur.value)
+        else
+          return acc
+      },0)
+    },
   },
   props:{
     car: Object
