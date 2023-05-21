@@ -1,6 +1,6 @@
 <template>
   <div class="form-control">
-    <div style="display:block; max-width: 500px;">
+    <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: center; width:100%">
       <input-component v-bind="{id:'model', name:'Модель авто', type:'text', value:car.model }" @edit="car.model = $event"/>
       <input-component v-bind="{id:'buildYear', name:'Год выпуска', type:'number', value:car.buildYear}" @edit="car.buildYear=$event"/>
     </div>
@@ -9,8 +9,8 @@
       <label>{{ `Расход: ${minus} руб.` }}</label><br/>
       <label>{{ `Прибыль: ${plus - minus} руб.` }}</label><br/>
       <br/>
-      <label>{{ `Дней в работе: ${daysCount}` }}</label><br/>
-      <label>{{ `Доход в день: ${Math.round((plus - minus)*100/daysCount)/100} руб.` }}</label><br/>
+      <label v-if="daysCount!==null">{{ `Дней в работе: ${daysCount}` }}</label><br/>
+      <label v-if="daysCount!==null">{{ `Доход в день: ${Math.round((plus - minus)*100/daysCount)/100} руб.` }}</label><br/>
     </div>
     <object-table class="table" id="Table" 
       v-bind="{columns:this.columns,array:this.car.operations}"
@@ -104,6 +104,7 @@ export default {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
   } 
   .table {
     margin: 5px;

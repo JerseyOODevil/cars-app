@@ -60,7 +60,7 @@
 <style>
     .table {
         color: #ff00ff;
-        display: block;
+        display: inline-block;
         padding: 10px;
         margin: 10px;
         caret-color: transparent;
@@ -72,7 +72,7 @@
         background-color: #999999;
     }
     .content {
-        max-width: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
