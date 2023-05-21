@@ -26,10 +26,10 @@
 <style>
   .text-field {
     margin-bottom: 1rem;
+    display: inline-flex;
   }
 
   .text-field__label {
-    display: block;
     margin-bottom: 0.25rem;
   }
 

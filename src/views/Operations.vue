@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <object-table
+    <object-table class="table"
       :array="opCar.operations"
       :columns="columns"
       @add="addOperation()"
@@ -54,7 +54,7 @@ export default {
       else
         this.opCar=resData.data[0]
     },
-    addOperation(){
+    addOperation: function(){
       let newId = 1
       if (this.opCar.operations.length > 0)
         newId = this.opCar.operations[this.opCar.operations.length-1].id + 1
@@ -65,13 +65,13 @@ export default {
         value: null
       })
     },
-    editOperation(opArray){
+    editOperation: function(opArray){
       this.opCar.operations = opArray
     },
-    deleteOperation(rowId){
+    deleteOperation: function(rowId){
       this.opCar.operations.splice(rowId, 1)
     },
-    async save(){
+    save: async function(){
       await axios({
         url: `/api/records?id=${this.opCar.id}`,
         method: 'put',
@@ -93,6 +93,10 @@ export default {
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    height: auto;
+  }
+  .table {
+    margin: 5px;
+    padding: 10px;
+    display: inline-block;
   }
 </style>
