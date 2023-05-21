@@ -1,5 +1,5 @@
 <template>
-    <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: center;">
+    <div style="display:block">
         <div style="display:flex; flex-direction: row; justify-content: flex-start;">
             <img src="@/assets/add.png" width="30" height="30" @click="$emit('add')">
         </div>

@@ -98,8 +98,8 @@ export default {
       this.cars=resData.data
     }
   },
-  mounted:function(){
-    this.refresh()
+  mounted:async function(){
+    await this.refresh()
   }
 }
 </script>
