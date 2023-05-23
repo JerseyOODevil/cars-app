@@ -2,7 +2,7 @@
   <div class="home">
     <label>{{ `Баланс: ${balance}` }}</label>
     <div style="display:block; width:100%; height:600px;">
-      <v-chart :option="capital" :init-options="echartsInit" autoresize/>
+      <v-chart :option="capitalOptions" :init-options="echartsInit" autoresize/>
     </div>
   </div>
 </template>
@@ -21,7 +21,8 @@ export default {
   },
   data: function() {
     return {
-      cars:[],
+      capital: [],
+      balance: 0,
       echartsInit: {
         renderer: 'canvas',
         useDirtyRect: false
@@ -29,57 +30,18 @@ export default {
     }
   },
   computed:{
-    balance: function(){
-      let res = 0
-
-      for(let car of this.cars){
-        for (let op of car.operations){
-          res += Number(op.value)
-        }
-      }
-      return res
-    },
-    capital: function(){
-      let dateNow = new Date()
-      let monthId = dateNow.getFullYear()*100 + dateNow.getMonth() - 99
-      
-      let months = []
-      for (let i=0; i<12; i++){
-        months.push(monthId)
-        if (monthId % 100 === 12)
-          monthId += 89
-        else
-          monthId++
-      }
-
-      let dataArray = [0,0,0,0,0,0,0,0,0,0,0,0]
-      let monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']
-
-      for (let car of this.cars)
-        for (let op of car.operations){
-          let opDate = new Date(op.date)
-          for (let i in months){
-            if (opDate.getFullYear()*100 + opDate.getMonth() + 1 <= months[i])
-              dataArray[i] += Number(op.value)
-          }
-        }
-      
-      let newMonths = []
-      for (let i in months){
-        newMonths.push(`${monthNames[months[i] % 100 - 1]} ${parseInt(Math.floor(months[i]/100))}`)
-      }
-      
+    capitalOptions: function(){
       return {
         xAxis: {
           type: 'category',
-          data: newMonths
+          data: this.capital.map(cur => cur.monthName)
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: dataArray,
+            data: this.capital.map(cur => cur.value),
             type: 'bar'
           }
         ],
@@ -91,11 +53,14 @@ export default {
   },
   methods:{
     refresh: async function(){
-      let resData = await axios({
-        url: '/api/records',
+       this.capital = await this.getCapital()
+    },
+    getCapital: async function(){
+      const response = await axios({
+        url: '/api/MySQL/getCapital',
         method: 'get'
       })
-      this.cars=resData.data
+      return response.status === 200 ? response.data : []
     }
   },
   mounted:async function(){

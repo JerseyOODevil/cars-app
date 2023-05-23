@@ -14,8 +14,9 @@
     </div>
     <object-table class="table" id="Table" 
       v-bind="{columns:this.columns,array:this.car.operations}"
-      @edit="editOperations($event)"
-      @delete="deleteOperation($event)"
+      @edit="this.car.operations=$event"
+      @delete="this.car.operations[$event].deleted = true"
+      @restore="car.operations[$event].deleted = false"
     />
     <div style="display:block;">
       <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
@@ -85,14 +86,6 @@ export default {
   },
   props:{
     car: Object
-  },
-  methods:{
-    editOperations(op){
-      this.car.operations=op
-    },
-    deleteOperation(id){
-      this.car.operations.splice(id,1)
-    }
   }
 }
 </script>

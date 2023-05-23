@@ -2,9 +2,9 @@
   <div class="cars">
     <cars-table 
       v-if="selectedCar===null"
-      :cars="revCars"
+      :cars="carsList"
       @add="addCar()"
-      @select="selectedCar = $event"
+      @select="selectCar($event)"
       @delete="deleteCar($event)"
     />
 
@@ -25,11 +25,12 @@
   import CarsTable from '@/components/CarsTable.vue'
   import Car from '@/components/Car.vue'
 
+
   export default {
     name: "Cars",
     data: function(){
       return {
-        cars: [],
+        carsList: [],
         selectedCar: null
       }
     },
@@ -44,39 +45,44 @@
       Car
     },
     methods: {
-      addCar: async function(){
-        let newId = 1
-        if (this.cars && this.cars.length > 0)
-          newId = this.cars[this.cars.length-1].id + 1
-        await axios({
-          url: '/api/records',
-          method: 'post',
-          data: {
-            id:newId,
-            table:'cars',
-            model: null,
-            buildYear: null,
-            operations: [],
-            photos:[]
-          }
+      addCar: function(){
+        this.selectedCar = {
+          id: null,
+          model: null,
+          buildYear: null,
+          operations: []
+        }
+      },
+      selectCar: async function(carId){
+        const response = await axios({
+          url: `/api/MySQL/getCar?id=${carId}`,
+          method: 'get'
         })
-        await this.getCars()
+        
+        if (response.status === 200){
+          this.selectedCar = response.data
+        }
+        else
+          for (err in response.data)
+            console.log(err)
+        
       },
       getCars: async function(){
         let resData = await axios({
-          url: '/api/records?table=cars',
+          url: '/api/MySQL/getCarsList',
           method: 'get'
         })
-        this.cars = resData.data
+        
+        this.carsList = resData.data
       },
       saveCar: async function(car){
         this.selectedCar=null
 
-        await axios({
-          url: `/api/records?id=${car.id}`,
-          method: 'put',
-          data:car
-        })
+        console.log(await axios({
+          url: `/api/MySQL/updateCar`,
+          method: 'post',
+          data: car
+        }))
 
         await this.getCars()
       },
@@ -86,7 +92,7 @@
       },
       deleteCar: async function(carId){
         await axios({
-          url: `/api/records?id=${carId}`,
+          url: `/api/MySQL/deleteCar?id=${carId}`,
           method: 'delete'
         })
         await this.getCars()

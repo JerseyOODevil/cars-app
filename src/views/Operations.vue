@@ -1,11 +1,12 @@
 <template>
   <div class="home">
     <object-table class="table"
-      :array="opCar.operations"
+      :array="operations"
       :columns="columns"
       @add="addOperation()"
-      @edit="editOperation($event)"
-      @delete="deleteOperation($event)"
+      @edit="operations = $event"
+      @delete="operations[$event].deleted = true"
+      @restore="operations[$event].deleted = false"
     />
     <input type="button" value="Сохранить изменения" @click="save()">
   </div>
@@ -24,7 +25,7 @@ export default {
   },
   data: function() {
     return {
-      opCar:{},
+      operations:{},
       columns: [
         {key:'name',label:'Наименование операции',type:'text'},
         {key:'date',label:'Дата операции',type:'date'},
@@ -35,53 +36,33 @@ export default {
   methods:{
     refresh: async function(){
       let resData = await axios({
-        url: '/api/records?table=operations',
+        url: '/api/MySQL/getOperations',
         method: 'get'
       })
-
-      if (resData.data.length === 0){
-        //Если записей об операциях нет, то создаёт запись в БД
-        await axios({
-          url: '/api/records',
-          method: 'post',
-          data:{
-            id: 0,
-            table: 'operations',
-            operations: []
-          }
-        })
-      }
+      if (resData.status === 200)
+        this.operations = resData.data
       else
-        this.opCar=resData.data[0]
+        console.log(resData.data)
     },
     addOperation: function(){
-      let newId = 1
-      if (this.opCar.operations.length > 0)
-        newId = this.opCar.operations[this.opCar.operations.length-1].id + 1
-      this.opCar.operations.push({
-        id: newId,
+      this.operations.push({
+        id: null,
         name: null,
         date: null,
         value: null
       })
     },
-    editOperation: function(opArray){
-      this.opCar.operations = opArray
-    },
-    deleteOperation: function(rowId){
-      this.opCar.operations.splice(rowId, 1)
-    },
     save: async function(){
       await axios({
-        url: `/api/records?id=${this.opCar.id}`,
-        method: 'put',
-        data: this.opCar
+        url: `/api/MySQL/updateOperations`,
+        method: 'post',
+        data: this.operations
       })
       await this.refresh()
     }
   },
-  mounted:function(){
-    this.refresh()
+  mounted:async function(){
+    await this.refresh()
   }
 }
 </script>
