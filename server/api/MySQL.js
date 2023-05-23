@@ -7,7 +7,7 @@ const connection = mysql.createPool({
     user: 'MySQLUser',
     password: 'Zalupa1576',
     database: 'db_cars',
-    timezone: 'UTC+3',
+    //timezone: 'UTC+3',
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
@@ -221,21 +221,25 @@ router.post('/updateOperations', async (req, res) => {
 
 router.get('/getCapital', async (req,res)=>{
     const query = `select
-            monthName
-        ,	sum(value) as value
-        from
-        (SELECT 
-            DATE_FORMAT(date, '%M %Y') as monthName
-        ,	sum(value) as value
-        from t_cars_operations
-        group by monthName
-        UNION
-        SELECT 
-            DATE_FORMAT(date, '%M %Y') as monthName
-        ,	sum(value) as value
-        from t_operations
-        group by monthName) a
-        group by monthName`
+                    monthId
+                ,	DATE_FORMAT(min(min_date), '%M %Y') as monthName
+                ,	sum(value) as value
+                from
+                (SELECT 
+                    DATE_FORMAT(date, '%Y%m') as monthId
+                ,	min(date) as min_date
+                ,	sum(value) as value
+                from t_cars_operations
+                group by monthId
+                UNION
+                SELECT 
+                    DATE_FORMAT(date, '%Y%m') as monthId
+                ,	min(date) as min_date
+                ,	sum(value) as value
+                from t_operations
+                group by monthId) a
+                group by monthId
+                order by monthId`
 
     await connection.query(query)
         .then(([result,fields])=>{

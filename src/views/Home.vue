@@ -22,7 +22,6 @@ export default {
   data: function() {
     return {
       capital: [],
-      balance: 0,
       echartsInit: {
         renderer: 'canvas',
         useDirtyRect: false
@@ -30,7 +29,19 @@ export default {
     }
   },
   computed:{
+    balance: function(){
+      return this.capital.reduce((acc, cur) => {
+        return acc + cur.value
+      },0)
+    },
     capitalOptions: function(){
+      let array = []
+      for (let i=0; i<this.capital.length; i++){
+        array.push(this.capital[i].value)
+        if (i > 0)
+          array[i] += array[i-1]
+      }
+
       return {
         xAxis: {
           type: 'category',
@@ -41,7 +52,7 @@ export default {
         },
         series: [
           {
-            data: this.capital.map(cur => cur.value),
+            data: array,
             type: 'bar'
           }
         ],
@@ -56,10 +67,7 @@ export default {
        this.capital = await this.getCapital()
     },
     getCapital: async function(){
-      const response = await axios({
-        url: '/api/MySQL/getCapital',
-        method: 'get'
-      })
+      const response = await axios.get('/api/MySQL/getCapital')
       return response.status === 200 ? response.data : []
     }
   },
