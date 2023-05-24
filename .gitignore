@@ -4,6 +4,7 @@ node_modules
 
 #Ignore uploaded photos
 /server/photos/*
+!/server/photos/trash.txt
 
 
 # local env files
