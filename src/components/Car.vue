@@ -1,26 +1,29 @@
 <template>
   <div class="form-control">
-    <div style="display:flex; flex-direction: column; justify-content: flex-start; align-items: center; width:100%">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, 250px); grid-gap: 40px; justify-content: center; width:100%">
       <input-component v-bind="{id:'model', name:'Модель авто', type:'text', value:car.model }" @edit="car.model = $event"/>
       <input-component v-bind="{id:'buildYear', name:'Год выпуска', type:'number', value:car.buildYear}" @edit="car.buildYear=$event"/>
     </div>
-    <div style="display:block; max-width: 500px;">
-      <label>{{ `Доход: ${plus} руб.` }}</label><br/>
-      <label>{{ `Расход: ${minus} руб.` }}</label><br/>
-      <label>{{ `Прибыль: ${plus - minus} руб.` }}</label><br/>
-      <br/>
-      <label v-if="daysCount!==null">{{ `Дней в работе: ${daysCount}` }}</label><br/>
-      <label v-if="daysCount!==null">{{ `Доход в день: ${Math.round((plus - minus)*100/daysCount)/100} руб.` }}</label><br/>
+    <div class="label-box">
+      <div style="text-align: center;">
+        <label>{{ `Доход: ${plus} руб.` }}</label><br/>
+        <label>{{ `Расход: ${minus} руб.` }}</label><br/>
+        <label>{{ `Прибыль: ${plus - minus} руб.` }}</label><br/>
+      </div>
+      <div v-if="daysCount!==null" style="text-align: center;">
+        <label>{{ `Дней в работе: ${daysCount}` }}</label><br/>
+        <label>{{ `Доход в день: ${Math.round((plus - minus)*100/daysCount)/100} руб.` }}</label>
+      </div>
     </div>
-    <object-table class="table" id="Table" 
+    <object-table id="Table" 
       v-bind="{columns:this.columns,array:this.car.operations}"
       @edit="this.car.operations=$event"
       @delete="this.car.operations[$event].deleted = true"
       @restore="car.operations[$event].deleted = false"
     />
-    <div style="display:block;">
-      <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
-      <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, 200px); justify-content: center; grid-gap: 30px;">
+        <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
+        <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
     </div>
   </div>
 </template>
@@ -93,10 +96,7 @@ export default {
 <style>
   .form-control {
     padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: block;
     width: 100%;
   } 
   .table {
@@ -108,5 +108,11 @@ export default {
     margin: 5px;
     padding: 10px;
     display: inline-block;
+  }
+  .label-box{
+        width:100%;
+        display:grid;
+        grid-template-columns: repeat(auto-fit, 250px);
+        justify-content: center;
   }
 </style>

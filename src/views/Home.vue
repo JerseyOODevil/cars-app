@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <label>{{ `Баланс: ${balance}` }}</label>
+    <div style="width: 100%; justify-content:center; text-align: center; display:block;">
+      <label>{{ `Баланс: ${balance}` }}</label>
+    </div>
     <div style="display:block; width:100%; height:600px;">
       <v-chart :option="capitalOptions" :init-options="echartsInit" autoresize/>
     </div>
@@ -79,9 +81,6 @@ export default {
 
 <style>
   .home {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: block;
   }
 </style>

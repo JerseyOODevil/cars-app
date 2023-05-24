@@ -1,9 +1,9 @@
 <template>
-    <div style="display:block">
-        <div style="display:flex; flex-direction: row; justify-content: flex-start;">
+    <div style="display:grid; grid-template-columns: 1fr 400px 1fr; grid-template-rows: 30px 1fr;">
+        <div style="display:block; grid-column-start: 2; grid-row-start: 1;">
             <img src="@/assets/add.png" width="30" height="30" @click="$emit('add')">
         </div>
-        <div style="display:block">
+        <div style="display:block; grid-column-start: 2; grid-row-start: 2;">
             <table class="table">
                 <tr v-for="car in cars">
                     <td @click="$emit('select', car.id)">{{ getCarName(car) }}</td>
@@ -52,10 +52,8 @@
         display: inline-block;
     }
     .table {
-        text-align: center;
         display: inline-block;
         padding: 5px;
         margin: 15px;
-        caret-color: transparent;
     }
 </style>

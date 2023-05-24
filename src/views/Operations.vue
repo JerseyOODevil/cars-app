@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <object-table class="table"
+  <div style="display: grid; grid-template-columns: 1fr 400px 1fr; width: 100%;">
+    <object-table style="grid-column-start: 2; grid-row-start: 1;"
       :array="operations"
       :columns="columns"
       @add="addOperation()"
@@ -8,7 +8,9 @@
       @delete="operations[$event].deleted = true"
       @restore="operations[$event].deleted = false"
     />
-    <input type="button" value="Сохранить изменения" @click="save()">
+    <div style="grid-column-start: 2; grid-row-start: 2; justify-self: center;">
+      <input type="button" value="Сохранить изменения" @click="save()">
+    </div>
   </div>
 </template>
 
@@ -68,13 +70,6 @@ export default {
 </script>
 
 <style>
-  .home {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-  }
   .table {
     margin: 5px;
     padding: 10px;

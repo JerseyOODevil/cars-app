@@ -65,18 +65,22 @@
         padding: 10px;
         margin: 10px;
         caret-color: transparent;
+        grid-column-start: 2;
+        grid-row-start: 2;
     }
     .image{
         display: block;
+        padding: 5px;
+        grid-column-start: 2;
+        grid-row-start: 1;
     }
     .header-row {
         background-color: #999999;
     }
     .content {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
+        display: grid;
+        grid-template-rows: 40px 1fr;
+        grid-template-columns: 1fr 500px 1fr;
     }
 </style>

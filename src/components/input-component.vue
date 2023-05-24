@@ -26,7 +26,8 @@
 <style>
   .text-field {
     margin-bottom: 1rem;
-    display: inline-flex;
+    display: block;
+    padding: 10px;
   }
 
   .text-field__label {
@@ -70,6 +71,7 @@
     border-radius: 0;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
+    width: 250px;
     height: calc(1.5rem + 2px);
     line-height: 1.25;
     padding: 1rem 0.75rem;
@@ -85,9 +87,8 @@
 
   .text-field_floating-3 .text-field__label {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    top: 10px;
+    left: 10px;
     padding: 1rem .75rem;
     pointer-events: none;
     border: 1px solid transparent;

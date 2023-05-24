@@ -107,10 +107,6 @@
 <style>
   .cars {
     width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: block;
   }
 </style>
