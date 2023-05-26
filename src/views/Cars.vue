@@ -60,7 +60,17 @@
         })
         
         if (response.status === 200){
-          this.selectedCar = response.data
+          const responseImg = await axios({
+            url: `/api/photos/getPhotos?id=${response.data.id}`,
+            method: 'get'
+          })
+          if (responseImg.status === 200){
+            this.selectedCar = response.data
+            this.selectedCar.photos = responseImg.data.photos
+            console.log(this.selectedCar.photos)
+          }
+          else
+            console.log(responseImg.data)
         }
         else
           for (err in response.data)

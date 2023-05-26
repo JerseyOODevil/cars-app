@@ -25,6 +25,21 @@
         <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
         <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
     </div>
+    <form v-show="false"
+      ref='uploadForm' 
+      id='uploadForm' 
+      action='/api/photos/uploadPhotos'
+      method='post' 
+      encType='multipart/form-data'
+    >
+        <input type="file" name="photos" ref="photos" @change="filesUpload($event.target.files)"/>
+    </form>  
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, 300px); justify-content: center;">
+        <input type="button" value="Загрузить фото" @click="$refs.photos.click()"/>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, 300px); justify-content: center;">
+      <img v-for="photo in car.photos" :src="photo" style="width:100%">
+    </div>
   </div>
 </template>
 
@@ -33,6 +48,7 @@
 
 import ObjectTable from '@/components/ObjectTable.vue'
 import InputComponent from '@/components/input-component.vue'
+import axios from 'axios'
 
 export default {
   name: 'Car',
@@ -89,6 +105,29 @@ export default {
   },
   props:{
     car: Object
+  },
+  methods:{
+    filesUpload: async function(files){
+      let fd = new FormData()
+      for (let i in files){
+        fd.append(`file[${i}]`, files[i])
+      }
+      
+      await axios.post(`/uploadPhotos?id=${this.car.id}`,fd,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    getImages: async function(){
+      
+    }
   }
 }
 </script>

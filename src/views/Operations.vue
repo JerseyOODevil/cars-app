@@ -1,14 +1,16 @@
 <template>
-  <div style="display: grid; grid-template-columns: 1fr 400px 1fr; width: 100%;">
-    <object-table style="grid-column-start: 2; grid-row-start: 1;"
-      :array="operations"
-      :columns="columns"
-      @add="addOperation()"
-      @edit="operations = $event"
-      @delete="operations[$event].deleted = true"
-      @restore="operations[$event].deleted = false"
-    />
-    <div style="grid-column-start: 2; grid-row-start: 2; justify-self: center;">
+  <div style="display:block;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit,500px); justify-content: center; width: 100%;">
+      <object-table
+        :array="operations"
+        :columns="columns"
+        @add="addOperation()"
+        @edit="operations = $event"
+        @delete="operations[$event].deleted = true"
+        @restore="operations[$event].deleted = false"
+      />
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit,500px); justify-content: center; width: 100%;">
       <input type="button" value="Сохранить изменения" @click="save()">
     </div>
   </div>

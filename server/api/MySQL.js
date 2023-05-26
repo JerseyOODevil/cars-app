@@ -151,10 +151,6 @@ router.get('/getCar', async (req,res) => {
             status = 500
             errors.push(err)
         })
-    
-    for (let i=0; i<car.operations.length; i++){
-        console.log(car.operations[i].date)
-    }
 
     res.status(status).json(status === 200 ? car : errors)
 })
