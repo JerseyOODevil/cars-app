@@ -2,7 +2,7 @@
     <div class="modal-mask" @click="windowClicked($event)">
         <div class="modal-container">
             <img :src="imageLink" class="figure-image"/>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, 50px); justify-content: center;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, 50px); justify-content: center; grid-row-start: 3;">
                 <input type="button" value="<" @click="$emit('change', -1)"/>
                 <img width="50" height="50" src="@/assets/delete.png" @click="$emit('delete')"/>
                 <input type="button" value=">" @click="$emit('change', 1)"/>
@@ -55,7 +55,7 @@ export default {
   font-family: Helvetica, Arial, sans-serif;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: calc(80vh - 50px) 50px;
+  grid-template-rows: 50px calc(80vh - 100px) 50px;
   justify-content: center;
 }
 
@@ -64,5 +64,6 @@ export default {
     height: 100%;
     -o-object-fit: contain;
     object-fit: contain;
+    grid-row-start: 2;
 }
 </style>

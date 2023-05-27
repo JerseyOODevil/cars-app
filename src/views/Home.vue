@@ -1,10 +1,12 @@
 <template>
   <div class="home">
-    <div style="width: 100%; justify-content:center; text-align: center; display:block;">
+    <div style="width: 100%; text-align: center; display:block;">
       <label>{{ `Баланс: ${balance}` }}</label>
     </div>
-    <div style="display:block; width:100%; height:600px;">
-      <v-chart :option="capitalOptions" :init-options="echartsInit" autoresize/>
+    <div class="graph-box">
+      <div>
+        <v-chart :option="capitalOptions" :init-options="echartsInit" autoresize/>
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +83,16 @@ export default {
 
 <style>
   .home {
-    display: block;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 90vw;
+  }
+  .graph-box{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 800px));
+    grid-auto-rows: 500px;
+    justify-content: center;
+    column-gap: 50px;
   }
 </style>
