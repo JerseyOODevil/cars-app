@@ -21,26 +21,36 @@
       @delete="this.car.operations[$event].deleted = true"
       @restore="car.operations[$event].deleted = false"
     />
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, 200px); justify-content: center; grid-gap: 30px;">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, 200px); justify-content: center; grid-gap: 30px; margin:20px">
         <input type="button" class="send" value="Сохранить изменения" @click="$emit('save',car)">
         <input type="button" class="send" value="Отменить изменения" @click="$emit('revert')">
     </div>
-    <form v-show="false"
-      ref='uploadForm' 
-      id='uploadForm' 
-      action='/api/photos/uploadPhotos'
-      method='post' 
-      encType='multipart/form-data'
-    >
-        <input type="file" name="photos" ref="photos" @change="filesUpload($event.target.files)"/>
-    </form>  
+
+    <div v-show="false">
+      <input type="file" name="photos" ref="photos" accept="image/*" multiple @change="filesUpload($event.target.files)"/>
+    </div> 
     <div style="display:grid; grid-template-columns: repeat(auto-fit, 300px); justify-content: center;">
         <input type="button" value="Загрузить фото" @click="$refs.photos.click()"/>
     </div>
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, 300px); justify-content: center;">
-      <img v-for="photo in car.photos" :src="photo" style="width:100%">
+
+    <div v-if="!car.photos" style="display:grid; grid-template-columns: 1fr; justify-content: center; text-align: center;">
+      <label>Ошибка при загрузке файлов</label>
+      <input type="button" value="Повторить попытку" @click="getImages()">
+    </div>
+    <div v-if="!!car.photos && car.photos.length === 0" style="display:grid; grid-template-columns: 1fr; justify-content: center; text-align: center;">
+      <label>Здесь ещё нет ни одной фотографии</label>
+    </div>
+    <div v-if="!!car.photos && car.photos.length > 0" class="image-box">
+      <img v-for="(photo, photoId) in car.photos" :src="photo" style="width:100%; height:100%; object-fit: contain;" @click="clickedImageId=photoId">
     </div>
   </div>
+
+  <modal-image v-if="!!clickedImage"
+    :imageLink="clickedImage"
+    @close="clickedImageId = null"
+    @change="clickedImageId = changeImage($event)"
+    @delete="deleteImage()"
+  />
 </template>
 
 <script>
@@ -48,13 +58,15 @@
 
 import ObjectTable from '@/components/ObjectTable.vue'
 import InputComponent from '@/components/input-component.vue'
+import ModalImage from '@/components/ModalImage.vue'
 import axios from 'axios'
 
 export default {
   name: 'Car',
   components: {
     ObjectTable,
-    InputComponent
+    InputComponent,
+    ModalImage
   },
   data:function(){
     return {
@@ -62,7 +74,8 @@ export default {
         {key:'name',label:'Наименование операции',type:'text'},
         {key:'date',label:'Дата операции',type:'date'},
         {key:'value',label:'Оборот, руб.',type:'number'}
-      ]
+      ],
+      clickedImageId: null
     }
   },
   computed:{
@@ -102,6 +115,12 @@ export default {
           return acc
       },0)
     },
+    clickedImage: function(){
+      if (this.clickedImageId === null)
+        return null
+
+      return this.car.photos[this.clickedImageId]
+    }
   },
   props:{
     car: Object
@@ -118,16 +137,52 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       })
-      .then((response) => {
-        console.log(response)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((response) => {
+          
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      
+      await this.getImages()
     },
     getImages: async function(){
-      
+      const response = await axios({
+        url: `/api/photo/getPhotos?id=${this.car.id}`,
+        method: 'get'
+      })
+
+      if (response.status === 200){
+        this.car.photos = response.data.photos
+      }
+      else{
+        this.car.photos = null
+        console.log(response.data)
+      }
+    },
+    changeImage: function(mod){
+      if (this.clickedImageId + mod < 0)
+        return this.car.photos.length - 1
+      if (this.clickedImageId + mod >= this.car.photos.length)
+        return 0
+      return this.clickedImageId + mod
+    },
+    deleteImage: async function(){
+      const response = await axios({
+        url: `/api/photo/delPhoto`,
+        method: 'post',
+        data: {
+          path: this.clickedImage
+        }
+      })
+      if (response.status !== 200)
+        console.log(response)
+      this.clickedImageId = null
+      await this.getImages()
     }
+  },
+  mounted: async function(){
+    await this.getImages()
   }
 }
 </script>
@@ -137,6 +192,7 @@ export default {
     padding: 5px;
     display: block;
     width: 100%;
+    justify-content: center;
   } 
   .table {
     margin: 5px;
@@ -153,5 +209,14 @@ export default {
         display:grid;
         grid-template-columns: repeat(auto-fit, 250px);
         justify-content: center;
+        margin: 30px;
+  }
+  .image-box{
+    width:100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 300px);
+    grid-auto-rows: 150px;
+    justify-content: center;
+    column-gap: 30px;
   }
 </style>

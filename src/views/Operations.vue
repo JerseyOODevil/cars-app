@@ -1,16 +1,18 @@
 <template>
   <div style="display:block;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit,500px); justify-content: center; width: 100%;">
-      <object-table
-        :array="operations"
-        :columns="columns"
-        @add="addOperation()"
-        @edit="operations = $event"
-        @delete="operations[$event].deleted = true"
-        @restore="operations[$event].deleted = false"
-      />
+    <div style="display: grid; grid-template-columns: 1fr 500px 1fr; width: 100%;">
+      <div style="display:block; grid-column-start:2">
+        <object-table
+          :array="operations"
+          :columns="columns"
+          @add="addOperation()"
+          @edit="operations = $event"
+          @delete="operations[$event].deleted = true"
+          @restore="operations[$event].deleted = false"
+        />
+      </div>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit,500px); justify-content: center; width: 100%;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit,300px); justify-content: center; width: 100%;">
       <input type="button" value="Сохранить изменения" @click="save()">
     </div>
   </div>
@@ -23,7 +25,7 @@ import axios from 'axios';
 import ObjectTable from '@/components/ObjectTable.vue'
 
 export default {
-  name: 'Home',
+  name: 'Operations',
   components: {
     ObjectTable
   },
@@ -72,9 +74,5 @@ export default {
 </script>
 
 <style>
-  .table {
-    margin: 5px;
-    padding: 10px;
-    display: inline-block;
-  }
+
 </style>

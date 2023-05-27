@@ -44,7 +44,7 @@ app.use(morgan('dev'))
 
 //API
 app.use('/api/MySQL', require('./api/MySQL'))
-app.use('/api/photos', require('./api/photos'))
+app.use('/api/photo', require('./api/photos'))
 
 //Photos
 app.use('/photos', express.static(path.join(__dirname, './photos')))
