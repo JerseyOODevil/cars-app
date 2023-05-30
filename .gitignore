@@ -1,6 +1,11 @@
 .DS_Store
 node_modules
 /dist
+/server/users.js
+
+#Ignore uploaded photos
+/server/photos/*
+!/server/photos/trash.txt
 
 
 # local env files

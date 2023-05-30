@@ -15,7 +15,8 @@
                         @input="editCell($event, rowId, col.key)"
                     />
                 </td>
-                <td><img src="@/assets/delete.png" width="30" height="30" @click="this.$emit('delete',rowId)"></td>
+                <td v-if="!row.deleted"><img src="@/assets/delete.png" width="30" height="30" @click="this.$emit('delete',rowId)"></td>
+                <td v-if="row.deleted"><img src="@/assets/restore.png" width="30" height="30" @click="this.$emit('restore',rowId)"></td>
             </tr>
         </table>
     </div>
@@ -40,7 +41,7 @@
                 let newObj = {id:null}
                 for (let col of this.columns)
                     newObj[col.key] = null
-                newObj.id = this.array.length > 0 ? this.array[this.array.length - 1].id + 1 : 1
+
                 this.array.push(newObj)
                 this.$emit('edit', this.array)
             },
@@ -64,18 +65,22 @@
         padding: 10px;
         margin: 10px;
         caret-color: transparent;
+        grid-column-start: 2;
+        grid-row-start: 2;
     }
     .image{
         display: block;
+        padding: 5px;
+        grid-column-start: 2;
+        grid-row-start: 1;
     }
     .header-row {
         background-color: #999999;
     }
     .content {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
+        display: grid;
+        grid-template-rows: 40px 1fr;
+        grid-template-columns: 1fr 500px 1fr;
     }
 </style>

@@ -1,8 +1,12 @@
 <template>
   <div class="home">
-    <label>{{ `Баланс: ${balance}` }}</label>
-    <div style="display:block; width:100%; height:600px;">
-      <v-chart :option="capital" :init-options="echartsInit" autoresize/>
+    <div style="width: 100%; text-align: center; display:block;">
+      <label>{{ `Баланс: ${balance}` }}</label>
+    </div>
+    <div class="graph-box">
+      <div>
+        <v-chart :option="capitalOptions" :init-options="echartsInit" autoresize/>
+      </div>
     </div>
   </div>
 </template>
@@ -21,7 +25,7 @@ export default {
   },
   data: function() {
     return {
-      cars:[],
+      capital: [],
       echartsInit: {
         renderer: 'canvas',
         useDirtyRect: false
@@ -30,56 +34,29 @@ export default {
   },
   computed:{
     balance: function(){
-      let res = 0
-
-      for(let car of this.cars){
-        for (let op of car.operations){
-          res += Number(op.value)
-        }
-      }
-      return res
+      return this.capital.reduce((acc, cur) => {
+        return acc + cur.value
+      },0)
     },
-    capital: function(){
-      let dateNow = new Date()
-      let monthId = dateNow.getFullYear()*100 + dateNow.getMonth() - 99
-      
-      let months = []
-      for (let i=0; i<12; i++){
-        months.push(monthId)
-        if (monthId % 100 === 12)
-          monthId += 89
-        else
-          monthId++
+    capitalOptions: function(){
+      let array = []
+      for (let i=0; i<this.capital.length; i++){
+        array.push(this.capital[i].value)
+        if (i > 0)
+          array[i] += array[i-1]
       }
 
-      let dataArray = [0,0,0,0,0,0,0,0,0,0,0,0]
-      let monthNames = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']
-
-      for (let car of this.cars)
-        for (let op of car.operations){
-          let opDate = new Date(op.date)
-          for (let i in months){
-            if (opDate.getFullYear()*100 + opDate.getMonth() + 1 <= months[i])
-              dataArray[i] += Number(op.value)
-          }
-        }
-      
-      let newMonths = []
-      for (let i in months){
-        newMonths.push(`${monthNames[months[i] % 100 - 1]} ${parseInt(Math.floor(months[i]/100))}`)
-      }
-      
       return {
         xAxis: {
           type: 'category',
-          data: newMonths
+          data: this.capital.map(cur => cur.monthName)
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: dataArray,
+            data: array,
             type: 'bar'
           }
         ],
@@ -91,11 +68,11 @@ export default {
   },
   methods:{
     refresh: async function(){
-      let resData = await axios({
-        url: '/api/records',
-        method: 'get'
-      })
-      this.cars=resData.data
+       this.capital = await this.getCapital()
+    },
+    getCapital: async function(){
+      const response = await axios.get('/api/MySQL/getCapital')
+      return response.status === 200 ? response.data : []
     }
   },
   mounted:async function(){
@@ -106,9 +83,16 @@ export default {
 
 <style>
   .home {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 90vw;
+  }
+  .graph-box{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 800px));
+    grid-auto-rows: 500px;
+    justify-content: center;
+    column-gap: 50px;
   }
 </style>
