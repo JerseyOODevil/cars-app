@@ -1,16 +1,27 @@
 const express = require('express')
 const morgan = require('morgan')
 const path = require('path')
+const jwt = require('jsonwebtoken')
 const fileUpload = require('express-fileupload')
 const fs = require('fs')
-
 const app = express()
 
+const auth = require('./users')
+
+const superString = 'PfkegfRjyz300Cv'
+
 app.use(fileUpload())
+app.use(require('express-session')({
+    secret: superString,
+    saveUninitialized:true,
+    cookie: { maxAge: 1000 * 20 },
+    resave: false
+}))
+
 app.set('port', 3000)
 
 app.listen(app.get('port'), () => {
-    console.log(`[OK] Server is running on localhost:${app.get('port')}`);
+    console.log(`[OK] Server is running on localhost:${app.get('port')}`)
 })
 
 app.post('/uploadPhotos', async (req, res) => {
@@ -45,6 +56,7 @@ app.use(morgan('dev'))
 //API
 app.use('/api/MySQL', require('./api/MySQL'))
 app.use('/api/photo', require('./api/photos'))
+app.use('/api/auth', require('./api/auth'))
 
 //Photos
 app.use('/photos', express.static(path.join(__dirname, './photos')))
